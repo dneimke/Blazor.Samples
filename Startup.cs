@@ -1,4 +1,3 @@
-using Blazor.Samples.Data;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
@@ -22,7 +21,6 @@ namespace Blazor.Samples
 
             services.AddServerSideBlazor()
                 .AddCircuitOptions(options => { options.DetailedErrors = true; });
-            services.AddSingleton<WeatherForecastService>();
         }
 
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)

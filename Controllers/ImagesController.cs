@@ -19,20 +19,18 @@ namespace Blazor.Samples.Controllers
         [HttpPost("paste/save")]
         public IActionResult SavePastedImage([FromForm] IFormFile pastedImage)
         {
-            const int MaxFileSize = 2 * 1024 * 1024; // 2097152; 
+            const int MaxFileSize = 100 * 1024; // 100KB; 
+            var bytes = ConvertToBytes(pastedImage);
 
-            if (pastedImage.Length > MaxFileSize)
+            if (bytes.Length > MaxFileSize)
             {
                 return BadRequest($"File is too big. Maximum size is {MaxFileSize} bytes.");
             }
-
-            var bytes = ConvertToBytes(pastedImage);
 
             if (!FileValidator.IsValidFileExtension(pastedImage.FileName, bytes, Array.Empty<byte>()))
             {
                 return BadRequest($"File data is not valid for the specified file format.");
             }
-
 
             return new JsonResult(new
             {

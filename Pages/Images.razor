@@ -26,7 +26,7 @@
 
 @if(!string.IsNullOrEmpty(imgSrc))
 {
-    <img @ref="ImagePlaceholder" src="@imgSrc" />
+    <img src="@imgSrc" />
 }
 
     
@@ -34,10 +34,9 @@
 @code {
     const string DefaultStatus = "";
     // Upload the file if less than 2 MB
-    const int MaxFileSize = 2097152; //  2 * 1024 * 1024;
+    const int MaxFileSize = 100 * 1024; // 100KB; 
     string status = DefaultStatus;
     string imgSrc = "";
-    ElementReference ImagePlaceholder;
 
     async Task OnInputFileChange(InputFileChangeEventArgs e)
     {
@@ -72,10 +71,7 @@
         imgSrc = url;
         StateHasChanged();
     }
-
-    
-
-
+   
     private IJSObjectReference module;
     private DotNetObjectReference<Images> selfReference;
 
@@ -85,7 +81,7 @@
         {
             selfReference = DotNetObjectReference.Create(this);
             module = await JS.InvokeAsync<IJSObjectReference>("import", "./image-drop.js");
-            await module.InvokeVoidAsync("enableImagePaste", selfReference, ImagePlaceholder);
+            await module.InvokeVoidAsync("enableImagePaste", selfReference);
         }
     }
     

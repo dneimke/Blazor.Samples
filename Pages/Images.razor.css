@@ -1,0 +1,14 @@
+﻿.attachment-upload-content {
+    width: 95%;
+    height: 100%;
+    margin: 20px;
+    padding: 8px;
+    border: #ddd 3px dashed;
+}
+
+.attachment-upload-content .main-text {
+    font-size: 20pt;
+}
+
+.attachment-upload-content .sub-text {
+}

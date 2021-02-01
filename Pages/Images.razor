@@ -1,0 +1,105 @@
+﻿@page "/images"
+@using System.IO
+@inject IJSRuntime JS
+@implements IAsyncDisposable
+
+<h3>Image Uploads</h3>
+
+<p>
+    This page demonstrates how to allow a user to upload an image either by picking one from their 
+    local filesystem or pasting an image onto the page.
+</p>
+
+<div class="text-center attachment-upload-content">
+    <p class="main-text pb-2 text-muted">Paste images from clipboard</p>
+    <p class="sub-text text-muted"><em>Or choose a file from your computer</em></p>
+    <InputFile OnChange="@OnInputFileChange" accept="image/png,image/gif,image/jpeg" />
+
+    <p class="text-danger">@status</p>
+
+    <hr />
+    <small class="my-2 text-muted">
+        Paste uses the <a href="https://developer.mozilla.org/en-US/docs/Web/API/Clipboard_API" target="_blank">Clipboard API</a> to respond to clipboard commands. 
+        If you experience issues, try saving your image to disk and use the file upload feature.
+    </small>
+</div>
+
+@if(!string.IsNullOrEmpty(imgSrc))
+{
+    <img @ref="ImagePlaceholder" src="@imgSrc" />
+}
+
+    
+
+@code {
+    const string DefaultStatus = "";
+    // Upload the file if less than 2 MB
+    const int MaxFileSize = 2097152; //  2 * 1024 * 1024;
+    string status = DefaultStatus;
+    string imgSrc = "";
+    ElementReference ImagePlaceholder;
+
+    async Task OnInputFileChange(InputFileChangeEventArgs e)
+    {
+        imgSrc = "";
+        var file = e.File;
+        
+        if (file == null)
+        {
+            return;
+        }
+        else if (file.Size > MaxFileSize)
+        {
+            status = $"The file is too big. Max size: {MaxFileSize} bytes.";
+        }
+        else
+        {
+            status = "Loading...";
+
+            var bytes = new byte[file.Size];
+            await file.OpenReadStream().ReadAsync(bytes);
+
+            var base64 = Convert.ToBase64String(bytes);
+            imgSrc = $"data:image/png;base64,{base64}";
+
+            status = DefaultStatus;
+        }
+    }
+
+    [JSInvokable]
+    public void HandlePaste(string url)
+    {
+        imgSrc = url;
+        StateHasChanged();
+    }
+
+    
+
+
+    private IJSObjectReference module;
+    private DotNetObjectReference<Images> selfReference;
+
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        if (firstRender)
+        {
+            selfReference = DotNetObjectReference.Create(this);
+            module = await JS.InvokeAsync<IJSObjectReference>("import", "./image-drop.js");
+            await module.InvokeVoidAsync("enableImagePaste", selfReference, ImagePlaceholder);
+        }
+    }
+    
+
+    public async ValueTask DisposeAsync()
+    {
+        if (selfReference != null)
+        {
+            selfReference.Dispose();
+        }
+
+        if (module != null)
+        {
+            await module.DisposeAsync();
+        }
+    }
+}

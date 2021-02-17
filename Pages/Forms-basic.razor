@@ -1,0 +1,56 @@
+﻿@page "/forms/fundamental"
+
+<EditForm Model="@_contactDetails" OnValidSubmit=@HandleValidSubmit>
+    <DataAnnotationsValidator />
+    <ValidationSummary />
+
+    <h3>Enter Contact Details</h3>
+
+    <div class="row mb-3">
+        <label for="@nameof(_contactDetails.Name)" class="col-md-1 col-form-label">Name</label>
+        <div class="col-md-3">
+            <InputText id="@nameof(_contactDetails.Name)"
+                class="form-control"
+                placeholder="Enter first name"
+                @bind-Value="@_contactDetails.Name" />
+
+            <ValidationMessage For="@(() => _contactDetails.Name)" />
+        </div>
+    </div>
+
+
+    <div class="row mb-3">
+        <label for="@nameof(_contactDetails.Email)" class="col-md-1 col-form-label">Email</label>
+        <div class="col-md-3">
+            <div class="input-group mb-3">
+              <span class="input-group-text" id="email-addon1">@@</span>
+              <InputText id="@nameof(_contactDetails.Email)"
+                class="form-control"
+                placeholder="Enter email address"
+                aria-describedby="email-addon1"
+                @bind-Value="@_contactDetails.Email" />
+            </div>
+
+            <ValidationMessage For="@(() => _contactDetails.Email)" />
+        </div>
+    </div>
+    
+    <button class="btn btn-secondary" type="reset" @onclick="ResetForm">Reset</button>
+    <button class="btn btn-primary" type="submit">Submit</button>
+
+</EditForm>
+
+
+@code {
+    ContactDetails _contactDetails = new();
+
+    private void HandleValidSubmit()
+    {
+        _contactDetails = new();
+    }
+
+    private void ResetForm()
+    {
+        _contactDetails = new();
+    }
+}

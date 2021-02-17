@@ -5,9 +5,11 @@ namespace Blazor.Samples.Models
     public class ContactDetails
     {
         [Required]
-        [StringLength(25, ErrorMessage = "First Name is too long.")]
-        public string FirstName { get; set; }
+        [StringLength(25, ErrorMessage = "Name is too long.")]
+        public string Name { get; set; }
 
+        [EmailAddress]
+        public string Email { get; set; }
 
         public bool IsOwner { get; set; }
 

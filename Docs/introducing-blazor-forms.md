@@ -6,7 +6,7 @@ In this article we'll explain the benefits of Blazor forms, we'll look at their 
 
 ## Form Fundamentals
 
-Let's assume that we are building a Contact form which has two fields (Name and Email) and a button to submit the form. The code required to do this in ASP.NET Core would look similar to this.
+Let's assume that we are building a Contact form which has two fields (Name and Email) and a button to submit the form. The code required to do this in ASP.NET MVC would look similar to this.
 
 ```html
 <form asp-controller="Home" asp-action="Register" method="post"> 
@@ -26,7 +26,7 @@ The form defines an HTTP method and controller action to which the data is sent.
 
 The form uses ASP.NET tag helpers to render the correct types of input controls and validation messages based on attributes configured on the underlying data model.
 
-One problem with this solution is that when the form is submitted, a full page refresh is required to update the state of the page. This requires sending a full HTTP payload to the client and it interrupts the users' experience. For example, the newly loaded page may result in the scroll position changing thus requiring the user to scroll to find where they left off!
+One problem with this solution is that when the form is submitted, a full page refresh is required to update the state of the page. This requires sending a full HTTP payload to the client and it interrupts the users' experience. For example, the newly loaded page may result in the scroll position changing thus requiring the user to scroll to where they left off!
 
 Of course a full page refresh can be avoided using JavaScript and AJAX to send only the form data to the server and handling the HTTP response to update only a specific fragment of the page.  This is the approach offered by SPA solutions which simplify the job of developing interactive, client-centric solutions by abstracting common tasks such as managing the state of fragments of pages away from the developer.
 
@@ -125,11 +125,11 @@ Now that we have an idea of how the EditForm is created, let's see how Blazor ha
 
 ![](./images/editform-onchange.png)
 
-In summary, what we need to understand here is that, whenever an OnChange event happens in any of the fields of a form, the EditContext will update. As a result, the EditForm's lifecycle events which are defined in ComponentBase will get called causing the Renderer class to re-render any changes.
+In summary, what we need to understand here is that, whenever an `OnChange` event happens in any of the fields of a form, the EditContext will update. As a result, the EditForm's lifecycle events which are defined in ComponentBase will get called causing the Renderer class to re-render any changes.
 
 ## Validating Form Inputs
 
-Now that we understand how a form is constructed in Blazor, we'll take a brief look at form validations. Let's build on top of our previous example and validate the input fields. Just as in ASP.NET Core MVC or Razor pages, we can use [Data Annotations](https://docs.microsoft.com/en-us/aspnet/core/mvc/models/validation?view=aspnetcore-5.0) to decorate our model parameters.
+Now that we understand how a form is constructed in Blazor, we'll take a brief look at form validations. Let's build on top of our previous example and validate the input fields. Just as in ASP.NET MVC or Razor pages, we can use [Data Annotations](https://docs.microsoft.com/en-us/aspnet/core/mvc/models/validation?view=aspnetcore-5.0) to decorate our model parameters.
 
 > Note: Make sure to add `Microsoft.AspNetCore.Mvc.DataAnnotations` NuGet package to your project if your models are on a .NET Standard library project.
 
@@ -212,4 +212,4 @@ The following summary describes each of the validation components that Blazor pr
 
 In this article we have given an overview of the fundamental concepts of Blazor forms. 
 
-We compared ASP.NET Core forms to Blazor forms, different form component Blazor provides, how EditForm works with the EditContext and lastly, how to perform form validations.
+We compared ASP.NET MVC forms to Blazor forms, different form component Blazor provides, how EditForm works with the EditContext and lastly, how to perform form validations.

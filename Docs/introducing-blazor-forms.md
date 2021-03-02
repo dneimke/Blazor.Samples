@@ -34,7 +34,7 @@ As we move away from a pure server-based approach by introducing JavaScript, we 
 
 With Blazor, developers can take advantage of the following benefits when developing form-based solutions:
 
-* NET data types used throughout the entire life of the request 
+* .NET data types used throughout the entire life of the request 
 * No need for additional coded API endpoints  
 * No need to write code to pass JSON between the front and back-end 
 * Ability to reuse the same validation code on the server and client
@@ -70,11 +70,11 @@ Writing a similar form in Blazor would look like this.
 
 The structure of the mark-up looks very similar for both the Blazor and MVC code. The key points to highlight in the Blazor code are: 
 
-* **EditForm** defines a Blazor form which renders a `<form>` element under-the-hood. You could bind either a Model (a POCO) or an EditContext as the data that represents the form. More on this will be discussed later. 
+* **EditForm** defines a Blazor form which renders a `<form>` element under-the-hood. You could bind either a Model (a POCO) or an `EditContext` as the data that represents the form. More on this will be discussed later. 
 
 * **Model** attribute lets us bind a top-level model object to the form. This model object is updated whenever we make changes to the form. 
 
-* **OnSubmit** is a callback event that gets triggered when we submit the form. Blazor also provides us *OnValidSubmit* and *OnInvalidSubmit* convenience methods. 
+* **OnSubmit** is a callback event that gets triggered when we submit the form. Blazor also provides us `OnValidSubmit` and `OnInvalidSubmit` convenience methods. 
 
 * **InputText** is a Blazor form component which represents an `<input>` element. The Input element is annotated with the `@bind-Value` attribute to bind to the model. In our case it is `Model.Name` and `Model.Email`. By default the corresponding model field that's bound to this component is updated in the `onChangeEvent` handler. 
 
@@ -101,6 +101,7 @@ The default set of Blazor form components that map to standard HTML input contro
 | [`InputSelect<TValue>`](https://docs.microsoft.com/en-us/dotnet/api/microsoft.aspnetcore.components.forms.inputselect-1?view=aspnetcore-5.0)     | `<select>`                |
 | [`InputText`](https://docs.microsoft.com/en-us/dotnet/api/microsoft.aspnetcore.components.forms.inputtext?view=aspnetcore-5.0)                   | `<input>`                 |
 | [`InputTextArea`](https://docs.microsoft.com/en-us/dotnet/api/microsoft.aspnetcore.components.forms.inputtextarea?view=aspnetcore-5.0)           | `<textarea>`              |
+
 
 All of these input components provide two-way data binding which makes it easier to keep our UI components and the data objects in sync especially with form validations. Moreover, we can also specify any additional attributes that are not provided by Blazor, which will be rendered to the to the HTML page.
 
@@ -130,7 +131,7 @@ In summary, what we need to understand here is that, whenever an OnChange event 
 
 Now that we understand how a form is constructed in Blazor, we'll take a brief look at form validations. Let's build on top of our previous example and validate the input fields. Just as in ASP.NET Core MVC or Razor pages, we can use [Data Annotations](https://docs.microsoft.com/en-us/aspnet/core/mvc/models/validation?view=aspnetcore-5.0) to decorate our model parameters.
 
-> Note: Make sure to add Microsoft.AspNetCore.Mvc.DataAnnotations NuGet package to your project if your models are on a .NET Standard library project.
+> Note: Make sure to add `Microsoft.AspNetCore.Mvc.DataAnnotations` NuGet package to your project if your models are on a .NET Standard library project.
 
 We will add the following annotations to our model.
 
@@ -160,7 +161,7 @@ In the markup for the form, we previously configured the OnSubmit handler. This 
 
 As you can see in the above image, the fields appear with a green border which indicates the form data is valid. This is not the case as the provided value for the Email field is clearly not a valid email address.
 
-To address this issue, simply add a DataAnnotationsValidator to the form.  The DataAnnotationsValidator component provides validation checks for data attributes that have been configured on the model instance.
+To address this issue, simply add a `<DataAnnotationsValidator>` element to the form.  This component provides validation checks for data attributes that have been configured on the model instance.
 
 ```html
 <EditForm Model="@ContactModel" OnValidSubmit=@FormSubmitted>
@@ -168,7 +169,7 @@ To address this issue, simply add a DataAnnotationsValidator to the form.  The D
     ...
 </EditForm>
 ```
-Again, the <DataAnnotationsValidator> component inherits from ComponentBase and has access to the EditContext. During the initialization of this component, it will register two types of validators, one on the model-level another on the field-level. More on this can be found [here](https://github.com/dotnet/aspnetcore/blob/edc1ca88e17e6cb60a5ea0966d751075d35111b9/src/Components/Forms/src/EditContextDataAnnotationsExtensions.cs#L36).
+Again, the `<DataAnnotationsValidator>` component inherits from `ComponentBase` and has access to the `EditContext`. During the initialization of this component, it will register two types of validators, one on the model-level another on the field-level. More on this can be found [here](https://github.com/dotnet/aspnetcore/blob/edc1ca88e17e6cb60a5ea0966d751075d35111b9/src/Components/Forms/src/EditContextDataAnnotationsExtensions.cs#L36).
 
 If you check the UI now you will see the following.
 

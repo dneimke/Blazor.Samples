@@ -70,13 +70,13 @@ Writing a similar form in Blazor would look like this.
 
 The structure of the mark-up looks very similar for both the Blazor and MVC code. The key points to highlight in the Blazor code are: 
 
-* EditForm defines a Blazor form which renders a `<form>` element under-the-hood. You could bind either a Model (a POCO) or an EditContext as the data that represents the form. More on this will be discussed later. 
+* **EditForm** defines a Blazor form which renders a `<form>` element under-the-hood. You could bind either a Model (a POCO) or an EditContext as the data that represents the form. More on this will be discussed later. 
 
-* Model attribute lets us bind a top-level model object to the form. This model object is updated whenever we make changes to the form. 
+* **Model** attribute lets us bind a top-level model object to the form. This model object is updated whenever we make changes to the form. 
 
-* OnSubmit is a callback event that gets triggered when we submit the form. Blazor also provides us *OnValidSubmit* and *OnInvalidSubmit* convenience methods. 
+* **OnSubmit** is a callback event that gets triggered when we submit the form. Blazor also provides us *OnValidSubmit* and *OnInvalidSubmit* convenience methods. 
 
-* InputText is a Blazor form component which represents an `<input>` element. The Input element is annotated with the `@bind-Value` attribute to bind to the model. In our case it is `Model.Name` and `Model.Email`. By default the corresponding model field that's bound to this component is updated in the `onChangeEvent` handler. 
+* **InputText** is a Blazor form component which represents an `<input>` element. The Input element is annotated with the `@bind-Value` attribute to bind to the model. In our case it is `Model.Name` and `Model.Email`. By default the corresponding model field that's bound to this component is updated in the `onChangeEvent` handler. 
 
 The Blazor @code block initializes our ContactModel object and has a method that gets triggered when the form is submitted. Note that all code is written using C# and we can even use .NET types such as HttpClient and take advantage of .NET dependency injection to help with separation of concerns and managing dependencies.
 
@@ -195,6 +195,8 @@ You can also choose to show validation messages alongside input controls by usin
     <button class="btn btn-primary mt-3" type="submit">Submit</button>
 </EditForm>
 ```
+
+![](./images/form-validation-4.png)
 
 The following summary describes each of the validation components that Blazor provides.
 

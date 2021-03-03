@@ -140,37 +140,7 @@ Before building your own custom components, it's worth checking out the comprehe
 
 ## Validation
 
-Now that we understand how a form is constructed in Blazor, we'll take a brief look at form validations. Let's build on top of our previous example and validate the input fields. Just as in ASP.NET MVC or Razor pages, we can use [Data Annotations](https://docs.microsoft.com/en-us/aspnet/core/mvc/models/validation?view=aspnetcore-5.0) to decorate our model parameters.
-
-> Note: Make sure to add `Microsoft.AspNetCore.Mvc.DataAnnotations` NuGet package to your project if your models are on a .NET Standard library project.
-
-We will add the following annotations to our model.
-
-```csharp
-public class Contact
-{
-    [Required]
-    public string Name { get; set; } = "";
-
-    [Required]
-    [EmailAddress]
-    public string Email { get; set; } = "";
-}
-```
-
-All supported data annotations can be found [here](https://docs.microsoft.com/en-us/dotnet/api/system.componentmodel.dataannotations?view=net-5.0).
-
-In the markup for the form, we previously configured the OnSubmit handler. This handler is triggered every time we submit the form whether it's valid or not. With Blazor forms, we can change this to OnValidSubmit to ensure that a user can only submit the form if validation passes.
-
-```html
-<EditForm Model="@ContactModel" OnValidSubmit="@FormSubmitted"> ... </EditForm>
-```
-
-![](./images/form-validation-1.png)
-
-As you can see in the above image, the fields appear with a green border which indicates the form data is valid. This is not the case as the provided value for the Email field is clearly not a valid email address.
-
-To address this issue, simply add a `<DataAnnotationsValidator>` element to the form. This component provides validation checks for data attributes that have been configured on the model instance.
+In the Blazor form definition shown earlier, we saw that **DataAnnotationsValidator** and **ValidationMessage** elements had been added to the form to provide validation support based on [Data Annotations](https://docs.microsoft.com/en-us/dotnet/api/system.componentmodel.dataannotations?view=net-5.0).
 
 ```html
 <EditForm Model="@ContactModel" OnValidSubmit="@FormSubmitted">
@@ -178,39 +148,6 @@ To address this issue, simply add a `<DataAnnotationsValidator>` element to the 
   ...
 </EditForm>
 ```
-
-Again, the `<DataAnnotationsValidator>` component inherits from `ComponentBase` and has access to the `EditContext`. During the initialization of this component, it will register two types of validators, one on the model-level another on the field-level. More on this can be found [here](https://github.com/dotnet/aspnetcore/blob/edc1ca88e17e6cb60a5ea0966d751075d35111b9/src/Components/Forms/src/EditContextDataAnnotationsExtensions.cs#L36).
-
-If you check the UI now you will see the following.
-
-![](./images/form-validation-2.png)
-
-As we can see, the validations have kicked in and the Email input box is highlighted in red. We could also show a helpful summary of validation errors by using a ValidationSummary component at a desired position on the form.
-
-![](./images/form-validation-3.png)
-
-You can also choose to show validation messages alongside input controls by using `ValidationMessage` components. The code will be as follows:
-
-```html
-<EditForm Model="@ContactModel" OnValidSubmit="@FormSubmitted">
-  <DataAnnotationsValidator />
-
-  <label for="@nameof(Contact.Name)" class="form-label">Name</label>
-  <InputText
-    Class="form-control mb-2"
-    @bind-Value="ContactModel.Name"
-  ></InputText>
-  <ValidationMessage For="() => ContactModel.Email"></ValidationMessage>
-
-  <label for="@nameof(Contact.Email)" class="form-label">Email</label>
-  <InputText Class="form-control" @bind-Value="ContactModel.Email"></InputText>
-  <ValidationMessage For="() => ContactModel.Email"></ValidationMessage>
-
-  <button class="btn btn-primary mt-3" type="submit">Submit</button>
-</EditForm>
-```
-
-![](./images/form-validation-4.png)
 
 The following summary describes each of the validation components that Blazor provides.
 
@@ -220,6 +157,14 @@ The following summary describes each of the validation components that Blazor pr
 | [`<ValidationMessage>`](https://docs.microsoft.com/en-us/dotnet/api/microsoft.aspnetcore.components.forms.validationmessage-1?view=aspnetcore-5.0)                                   | Show validation error messages for an individual input element at set positions within the page                                                                                                                  |
 | [`<DataAnnotationsValidator>`](https://docs.microsoft.com/en-us/dotnet/api/microsoft.aspnetcore.components.forms.dataannotationsvalidator?view=aspnetcore-5.0)                       | Applies validation rules based on Data Annotations at runtime                                                                                                                                                    |
 | [`<ObjectGraphDataAnnotationsValidator>`](https://docs.microsoft.com/en-us/aspnet/core/blazor/forms-validation?view=aspnetcore-5.0#nested-models-collection-types-and-complex-types) | Applies validation rules similar to DataAnnotationsValidator except that it traverses nested properties within an object hierarchy of the given model. Note that this need to be added as a separate dependency. |
+
+Each of the validation components has access to the `EditContext` of the form. The validators use this to access and validate the `Model`. During validation, the validator maintains a store of error messages for each field associated with the form. You can see the code for how this is done [here](https://github.com/dotnet/aspnetcore/blob/edc1ca88e17e6cb60a5ea0966d751075d35111b9/src/Components/Forms/src/EditContextDataAnnotationsExtensions.cs#L36).
+
+Form fields access the message store to determine how to render their own state. The following image shows the Email field highlighted in red, indicating to the user that it is in an invalid state.
+
+![](./images/form-validation-2.png)
+
+In addition to the field state warnings, you can use the `ValidationMessage` and `<ValidationSummary>` components to show the validation error messages to the user at relevant positions on the form. As you can imagine, these components also use the message store to gain access to validation messages.
 
 ## Conclusion
 

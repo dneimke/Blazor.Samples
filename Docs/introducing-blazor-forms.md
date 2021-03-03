@@ -158,13 +158,13 @@ The following summary describes each of the validation components that Blazor pr
 | [`<DataAnnotationsValidator>`](https://docs.microsoft.com/en-us/dotnet/api/microsoft.aspnetcore.components.forms.dataannotationsvalidator?view=aspnetcore-5.0)                       | Applies validation rules based on Data Annotations at runtime                                                                                                                                                    |
 | [`<ObjectGraphDataAnnotationsValidator>`](https://docs.microsoft.com/en-us/aspnet/core/blazor/forms-validation?view=aspnetcore-5.0#nested-models-collection-types-and-complex-types) | Applies validation rules similar to DataAnnotationsValidator except that it traverses nested properties within an object hierarchy of the given model. Note that this need to be added as a separate dependency. |
 
-Each of the validation components has access to the `EditContext` of the form. The validators use this to access and validate the `Model`. During validation, the validator maintains a store of error messages for each field associated with the form. You can see the code for how this is done [here](https://github.com/dotnet/aspnetcore/blob/edc1ca88e17e6cb60a5ea0966d751075d35111b9/src/Components/Forms/src/EditContextDataAnnotationsExtensions.cs#L36).
+Each of the validation components has access to the `EditContext` of the form. The validators use this to access and validate the `Model`. The validators maintain a store of error messages for each field associated with the form. You can see the code for how this is done [here](https://github.com/dotnet/aspnetcore/blob/edc1ca88e17e6cb60a5ea0966d751075d35111b9/src/Components/Forms/src/EditContextDataAnnotationsExtensions.cs#L36).
 
-Form fields access the message store to determine how to render their own state. The following image shows the Email field highlighted in red, indicating to the user that it is in an invalid state.
+Form fields access the [ValidationMessageStore](https://github.com/dotnet/aspnetcore/blob/edc1ca88e17e6cb60a5ea0966d751075d35111b9/src/Components/Forms/src/ValidationMessageStore.cs) to check for errors when determining how to render their own state. The following image shows the Email field highlighted in red, indicating to the user that it is in an invalid state.
 
 ![](./images/form-validation-2.png)
 
-In addition to the field state warnings, you can use the `ValidationMessage` and `<ValidationSummary>` components to show the validation error messages to the user at relevant positions on the form. As you can imagine, these components also use the message store to gain access to validation messages.
+In addition to the field state warnings, you can add `ValidationMessage` and `<ValidationSummary>` components to display validation error messages to the user at relevant positions on the form. As you may have already guessed, these components also use the message store to gain access to validation messages.
 
 ## Extending Validation
 
@@ -179,7 +179,7 @@ protected override void OnInitialized()
 }
 ```
 
-Validation rules - if we want additional validation logic other than DataAnnotations, we can write our own custom validator and handle validation events from the `EditContext` to use our own logic to write errors to the message store.
+Rules - if we want additional validation logic other than DataAnnotations, we can write our own custom validator and handle validation events from the `EditContext` to use our own logic to write errors to the message store.
 
 ```csharp
 var messages = new ValidationMessageStore(editContext);
@@ -189,8 +189,6 @@ editContext.OnValidationRequested +=
 
 editContext.OnFieldChanged +=
     (sender, eventArgs) => ValidateField(editContext, messages, eventArgs.FieldIdentifier);
-
-return editContext;
 ```
 
 ## Conclusion

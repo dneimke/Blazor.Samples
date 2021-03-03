@@ -77,13 +77,13 @@ In the Blazor example, there is no separate Controller/Action and all code is wr
 
 Now that we've seen how to structure a Blazor form, it's worth diving a little deeper to demystify the `EditForm` and its related child elements.
 
-All Blazor form elements we've seen, including the [EditForm](https://github.com/dotnet/aspnetcore/blob/main/src/Components/Web/src/Forms/EditForm.cs), inherit from the abstract [ComponentBase](https://docs.microsoft.com/en-us/dotnet/api/microsoft.aspnetcore.components.componentbase?view=aspnetcore-5.0) class. This class provides the plumbing required to access the shared EditContext of the form which is what allows components to participate in Blazor's state management, events, and page lifecyle.
+All Blazor form elements we've seen, including the [EditForm](https://github.com/dotnet/aspnetcore/blob/main/src/Components/Web/src/Forms/EditForm.cs), inherit from the abstract [ComponentBase](https://docs.microsoft.com/en-us/dotnet/api/microsoft.aspnetcore.components.componentbase?view=aspnetcore-5.0) class. This `EditForm` is the root source for [cascading](https://docs.microsoft.com/en-us/aspnet/core/blazor/components/cascading-values-and-parameters?view=aspnetcore-5.0) the EditContext and is the coordinator of the form's lifecycle and events.
 
-Blazor builds on top of the `ComponentBase` class to provide us with a handy set of built-in components that align to each of the standard HTML input types. The base class for each of these built-in components is the InputBase class as shown here in the following class hierarchy diagram.
+Blazor builds on top of the `ComponentBase` class to provide us with a handy set of built-in components that align to each of the standard HTML input types. The base class for each of these is the `InputBase` class as shown in the following class hierarchy diagram.
 
 ![](./images/inheritance-hierarchy.jpg)
 
-At runtime, it is the `EditContext` that is responsible for handling events that fire in reponse to interactions and notifying all other elements in the form's component hierarchy. This gives each component the opportunity to update their state before the form is then re-rendered.
+At runtime, it is the `EditContext` that is responsible for handling events that fire in reponse to interactions and notifying all other elements in the form's component hierarchy. Each component then updates their state before the form is then re-rendered.
 
 ![](./images/editform-onchange.png)
 

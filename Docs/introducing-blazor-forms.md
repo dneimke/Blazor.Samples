@@ -111,7 +111,7 @@ The following example shows a component to consolidate the repetitive markup tha
 </div>
 ```
 
-In this example we are simply extending from `InputText` component which is the logical equivalent of a HTML input text element. This seems like a good fit as we are logically representing a single text input and extending from `InputText` saves us from having to write any additional code. You can extend from other classes in the inheritance hierarchy depending on your own specific customization needs.
+In this example we are simply extending from `InputText` which is the logical equivalent of a HTML input text element. This seems like a good fit as we are logically representing a single text input and extending from `InputText` saves us from having to write any additional code. You can extend from other classes in the inheritance hierarchy depending on your own specific customization needs.
 
 Our custom `BootstrapInput` control is shown here in a form with a binding to the `ContactDetails.Name` property of the model.
 
@@ -140,7 +140,7 @@ In the Blazor form definition shown earlier, we saw that **DataAnnotationsValida
 </EditForm>
 ```
 
-The following summary describes each of the validation components that Blazor provides.
+The following summary describes each of the built-in validation components that Blazor provides.
 
 | Validation Component                                                                                                                                                                 | Usage                                                                                                                                                                                                            |
 | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
@@ -149,7 +149,7 @@ The following summary describes each of the validation components that Blazor pr
 | [`<DataAnnotationsValidator>`](https://docs.microsoft.com/en-us/dotnet/api/microsoft.aspnetcore.components.forms.dataannotationsvalidator?view=aspnetcore-5.0)                       | Applies validation rules based on Data Annotations at runtime                                                                                                                                                    |
 | [`<ObjectGraphDataAnnotationsValidator>`](https://docs.microsoft.com/en-us/aspnet/core/blazor/forms-validation?view=aspnetcore-5.0#nested-models-collection-types-and-complex-types) | Applies validation rules similar to DataAnnotationsValidator except that it traverses nested properties within an object hierarchy of the given model. Note that this need to be added as a separate dependency. |
 
-Each of the validation components has access to the `EditContext` of the form. The validators use this to access and validate the `Model`. The validators maintain a store of error messages for each field associated with the form. You can see the code for how this is done [here](https://github.com/dotnet/aspnetcore/blob/edc1ca88e17e6cb60a5ea0966d751075d35111b9/src/Components/Forms/src/EditContextDataAnnotationsExtensions.cs#L36).
+Each of the validation components has access to the `EditContext` and they use this to access and validate the `Model`. The validators maintain a store of error messages for each field associated with the form. You can see the code for how this is done [here](https://github.com/dotnet/aspnetcore/blob/edc1ca88e17e6cb60a5ea0966d751075d35111b9/src/Components/Forms/src/EditContextDataAnnotationsExtensions.cs#L36).
 
 Form fields access the [ValidationMessageStore](https://github.com/dotnet/aspnetcore/blob/edc1ca88e17e6cb60a5ea0966d751075d35111b9/src/Components/Forms/src/ValidationMessageStore.cs) to check for errors when determining how to render their own state. The following image shows the Email field highlighted in red, indicating to the user that it is in an invalid state.
 
@@ -171,6 +171,9 @@ protected override void OnInitialized()
 ```
 
 Rules - if we want additional validation logic other than DataAnnotations, we can write our own custom validator and handle validation events from the `EditContext` to use our own logic to write errors to the message store.
+
+https://github.com/Blazored/FluentValidation
+https://chrissainty.com/using-fluentvalidation-for-forms-validation-in-razor-components/
 
 ```csharp
 public class CustomValidator : ComponentBase

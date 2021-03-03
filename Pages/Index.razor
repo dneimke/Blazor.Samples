@@ -2,6 +2,23 @@
 
 <h1>Blazor Samples</h1>
 
+<EditForm Model="@ContactDetails" OnSubmit=@FormSubmitted>
+    <Blazor.Samples.Components.SearchTextbox @bind-Value="ContactDetails.Name"></Blazor.Samples.Components.SearchTextbox>    
+
+    <button class="btn btn-primary mt-3" type="submit">Submit</button>
+</EditForm>
+
+
 <p>
     Browse the samples from the menu.
 </p>
+
+@code {
+    public ContactDetails ContactDetails = new();
+
+    void FormSubmitted()
+    {
+        var name = ContactDetails.Name;
+    }
+
+}

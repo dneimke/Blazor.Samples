@@ -48,21 +48,15 @@ Converting the previous form to Blazor results in the following code and markup.
   <DataAnnotationsValidator />
 
   <label for="@nameof(Contact.Name)" class="form-label">Name</label>
-  <InputText Class="form-control" @bind-Value="ContactModel.Name"></InputText>
+  <InputText Class="form-control" @bind-Value="ContactModel.Name" />
   <ValidationMessage For="ContactModel.Name" />
 
   <label for="@nameof(Contact.Email)" class="form-label">Email</label>
-  <InputText Class="form-control" @bind-Value="ContactModel.Email"></InputText>
+  <InputText Class="form-control" @bind-Value="ContactModel.Email" />
   <ValidationMessage For="ContactModel.Email" />
 
   <button class="btn btn-primary mt-3" type="submit">Submit</button>
 </EditForm>
-
-@code { public Contact ContactModel { get; set; } = new(); void FormSubmitted()
-{ Logger.LogInformation($"Name: {ContactModel.Name}, Email:
-{ContactModel.Email}"); // You could call your Web API endpoints or services
-here // Eg: await Http.SendJsonAsync(HttpMethod.Post, "/api/Contact/Create",
-ContactModel); } }
 ```
 
 Although the structure of the mark-up looks very similar for both the Blazor and MVC code, the key points to highlight in the Blazor code are:
@@ -83,34 +77,33 @@ In the Blazor example, there is no separate Controller/Action and all code is wr
 
 Now that we've seen how to structure a Blazor form, it's worth diving a little deeper to demystify the `EditForm` and its related child elements.
 
-All Blazor form elements we've seen, including the [EditForm](https://github.com/dotnet/aspnetcore/blob/main/src/Components/Web/src/Forms/EditForm.cs), inherit from the abstract [ComponentBase](https://docs.microsoft.com/en-us/dotnet/api/microsoft.aspnetcore.components.componentbase?view=aspnetcore-5.0) class. This class provides the default implementation required to participate in Blazor's state management, events, and page lifecyle.
+All Blazor form elements we've seen, including the [EditForm](https://github.com/dotnet/aspnetcore/blob/main/src/Components/Web/src/Forms/EditForm.cs), inherit from the abstract [ComponentBase](https://docs.microsoft.com/en-us/dotnet/api/microsoft.aspnetcore.components.componentbase?view=aspnetcore-5.0) class. This class provides the plumbing required to access the shared EditContext of the form which is what allows components to participate in Blazor's state management, events, and page lifecyle.
 
-The following diagram shows how the `EditForm` renders a form using some of the standard component lifecycle events and hooks.
+Blazor builds on top of the `ComponentBase` class to provide us with a handy set of built-in components that align to each of the standard HTML input types. The base class for each of these built-in components is the InputBase class as shown here in the following class hierarchy diagram.
 
-![](./images/creation-of-editform.png)
+![](./images/inheritance-hierarchy.jpg)
 
-At runtime, Blazor handles events that fire in reponse to interactions and notifies all child elements in the form's component hierarchy.
+At runtime, it is the `EditContext` that is responsible for handling events that fire in reponse to interactions and notifying all other elements in the form's component hierarchy. This gives each component the opportunity to update their state before the form is then re-rendered.
 
 ![](./images/editform-onchange.png)
 
-As the form's child components are notified, they are given the chance to update their own state before the form is then re-rendered.
+## Extending Form Components
 
-## Custom input components
+There may be times where you need to create your own custom components. For example, it is common to use custom components to encapsulate and simplify repetitive chunks of code.
 
-Blazor builds on top of the `ComponentBase` class to provide us with a handy set of built-in components that align to each of the standard HTML input types.
-
-We can create custom components by extending from an existing component or by building new types of input components from the ground up.
-
-The following code snippet creates a razor component that consolidates the markup required for a styled search textbox so that it is easier to reuse and to help enforce consistency across an application.
+The following example shows a component to consolidate the repetitive markup that is required to render Bootstrap form element groups. This is done to make it easier to maintain the code and helps enforce consistency across an application.
 
 ```html
 @inherits InputText
 
 <div class="form-group">
-  <div class="input-group-text"><i class="fas fa-search"></i></div>
+  @if (!string.IsNullOrWhiteSpace(Label)) {
+  <label class="form-control-label" for="@Id">@Label</label>
+  }
+
   <InputText
     Class="form-control"
-    placeholder="Search"
+    placeholder="@Label"
     Value="@Value"
     ValueChanged="@ValueChanged"
     ValueExpression="@ValueExpression"
@@ -118,15 +111,13 @@ The following code snippet creates a razor component that consolidates the marku
 </div>
 ```
 
-In this example we are extending the `InputText` component which is the logical equivalent of a HTML input text element. This suits the needs for this search component as we are logically presenting a single text input element to the user. You can choose to extend from other classes in the inheritance hierarchy depending on your own specific customization needs.
+In this example we are simply extending from `InputText` component which is the logical equivalent of a HTML input text element. This seems like a good fit as we are logically representing a single text input and extending from `InputText` saves us from having to write any additional code. You can extend from other classes in the inheritance hierarchy depending on your own specific customization needs.
 
-![](./images/inheritance-hierarchy.jpg)
-
-The following code snippet shows our `SearchTextbox` being used in a form with a binding to the `ContactDetails.Name` property of the forms model.
+Our custom `BootstrapInput` control is shown here in a form with a binding to the `ContactDetails.Name` property of the model.
 
 ```html
 <EditForm Model="@ContactDetails" OnSubmit="@FormSubmitted">
-  <SearchTextbox @bind-Value="ContactDetails.Name"></SearchTextbox>
+  <BootstrapInput @bind-Value="ContactDetails.Name" />
 
   <button class="btn btn-primary mt-3" type="submit">Submit</button>
 </EditForm>
@@ -195,4 +186,4 @@ editContext.OnFieldChanged +=
 
 In this article we have given an overview of the fundamental concepts of Blazor forms.
 
-We compared ASP.NET MVC forms to Blazor forms, different form component Blazor provides, how EditForm works with the EditContext and lastly, how to perform form validations.
+We compared ASP.NET MVC forms to Blazor forms. We then looked at the fundamental concepts required to understand how to use form inputs and validation and saw how to extend and customize them to our own needs.

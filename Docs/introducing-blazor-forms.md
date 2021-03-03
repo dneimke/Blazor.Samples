@@ -8,7 +8,7 @@ Table of contents
 
 In this article we'll explain the benefits of Blazor forms, we'll look at their lifecycle and explain the fundamental concepts used to create and extend forms using Blazor.
 
-<a name="fundamentals"></a> ## Form Fundamentals
+## <a name="fundamentals"></a> Form Fundamentals
 
 Let's assume that we are building a Contact form which has two fields (Name and Email) and a button to submit the form. In ASP.NET MVC the code required to build such a form might look like this.
 

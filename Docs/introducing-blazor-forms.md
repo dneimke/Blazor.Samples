@@ -45,11 +45,15 @@ Converting the previous form to Blazor results in the following code and markup.
 
 ```html
 <EditForm Model="@ContactModel" OnSubmit="@FormSubmitted">
+  <DataAnnotationsValidator />
+
   <label for="@nameof(Contact.Name)" class="form-label">Name</label>
   <InputText Class="form-control" @bind-Value="ContactModel.Name"></InputText>
+  <ValidationMessage For="ContactModel.Name" />
 
   <label for="@nameof(Contact.Email)" class="form-label">Email</label>
   <InputText Class="form-control" @bind-Value="ContactModel.Email"></InputText>
+  <ValidationMessage For="ContactModel.Email" />
 
   <button class="btn btn-primary mt-3" type="submit">Submit</button>
 </EditForm>
@@ -70,6 +74,8 @@ Although the structure of the mark-up looks very similar for both the Blazor and
 - **OnSubmit** configures a local method which gets triggered when the form is submitted. _Note: Blazor also provides us `OnValidSubmit` and `OnInvalidSubmit` convenience methods_.
 
 - **InputText** a Blazor component representing a HTML `<input>` element. It uses the `@bind-Value` attribute to describe which property the component should bind to on the model.
+
+- **DataAnnotationsValidator** and **ValidationMessage** elements attach our form to validation support and display any associated validation warnings to the user.
 
 In the Blazor example, there is no separate Controller/Action and all code is written using C# and .NET.
 
@@ -93,9 +99,9 @@ As the form's child components are notified, they are given the chance to update
 
 Blazor builds on top of the `ComponentBase` class to provide us with a handy set of built-in components that align to each of the standard HTML input types.
 
-We can also create our own custom components either by extending from an existing component or by building new types of input components from the ground up.
+We can create custom components by extending from an existing component or by building new types of input components from the ground up.
 
-The following code snippet extends the `InputText` component to consolidate the markup required for a styled search textbox so that it is easier to reuse and to help enforce consistency across an application.
+The following code snippet creates a razor component that consolidates the markup required for a styled search textbox so that it is easier to reuse and to help enforce consistency across an application.
 
 ```html
 @inherits InputText
@@ -112,9 +118,11 @@ The following code snippet extends the `InputText` component to consolidate the 
 </div>
 ```
 
-This means any form components participate in the component lifecycle can be used to extend functionality by providing our own implementation for things such as validation and component styling if need be. We will look at a whole variety of custom controls others have built leveraging this concept.
+In this example we are extending the `InputText` component which is the logical equivalent of a HTML input text element. This suits the needs for this search component as we are logically presenting a single text input element to the user. You can choose to extend from other classes in the inheritance hierarchy depending on your own specific customization needs.
 
-We can use our `SearchTextbox` razor component wherever it is required. The following code snippet shows it added to a form and having its value bound to the `ContactDetails.Name` property of the forms model.
+![](./images/inheritance-hierarchy.jpg)
+
+The following code snippet shows our `SearchTextbox` being used in a form with a binding to the `ContactDetails.Name` property of the forms model.
 
 ```html
 <EditForm Model="@ContactDetails" OnSubmit="@FormSubmitted">

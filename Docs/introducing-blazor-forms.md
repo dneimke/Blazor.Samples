@@ -166,6 +166,33 @@ Form fields access the message store to determine how to render their own state.
 
 In addition to the field state warnings, you can use the `ValidationMessage` and `<ValidationSummary>` components to show the validation error messages to the user at relevant positions on the form. As you can imagine, these components also use the message store to gain access to validation messages.
 
+## Extending Validation
+
+Styles... describe that we might want to customize the styles to conform to our design system. This might be Bootstrap, Material UI, or our own custom design system.
+
+```csharp
+protected override void OnInitialized()
+{
+    _editContext = new EditContext(_contactDetails);
+    _editContext.SetFieldCssClassProvider(new BootstrapStyleProvider());
+    _editContext.OnFieldChanged += HandleFieldChanged;
+}
+```
+
+Validation rules - if we want additional validation logic other than DataAnnotations, we can write our own custom validator and handle validation events from the `EditContext` to use our own logic to write errors to the message store.
+
+```csharp
+var messages = new ValidationMessageStore(editContext);
+
+editContext.OnValidationRequested +=
+    (sender, eventArgs) => ValidateModel((EditContext)sender, messages);
+
+editContext.OnFieldChanged +=
+    (sender, eventArgs) => ValidateField(editContext, messages, eventArgs.FieldIdentifier);
+
+return editContext;
+```
+
 ## Conclusion
 
 In this article we have given an overview of the fundamental concepts of Blazor forms.

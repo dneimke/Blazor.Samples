@@ -2,9 +2,13 @@
 
 Forms are a key of any web application as they provide a way to collect information from end-users. This information might range from the user details that we collect as part of a sign-up process down to a single textbox that allows users to leave comments or post messages in an collaborative application.
 
+Table of contents
+
+* [Form Fundamentals](#fundamentals)
+
 In this article we'll explain the benefits of Blazor forms, we'll look at their lifecycle and explain the fundamental concepts used to create and extend forms using Blazor.
 
-## Form Fundamentals
+<a name="fundamentals"></a> ## Form Fundamentals
 
 Let's assume that we are building a Contact form which has two fields (Name and Email) and a button to submit the form. In ASP.NET MVC the code required to build such a form might look like this.
 

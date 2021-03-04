@@ -49,15 +49,15 @@ With Blazor, developers write end-to-end solutions using .NET. This removes the 
 Converting the previous form to Blazor results in the following code and markup.
 
 ```html
-<EditForm Model="@ContactModel" OnSubmit="@FormSubmitted">
+<EditForm Model="@Contact" OnSubmit="@FormSubmitted">
   <DataAnnotationsValidator />
 
   <label for="@nameof(Contact.Name)" class="form-label">Name</label>
-  <InputText Class="form-control" @bind-Value="ContactModel.Name" />
-  <ValidationMessage For="ContactModel.Name" />
+  <InputText Class="form-control" @bind-Value="Contact.Name" />
+  <ValidationMessage For="Contact.Name" />
 
   <label for="@nameof(Contact.Email)" class="form-label">Email</label>
-  <InputText Class="form-control" @bind-Value="ContactModel.Email" />
+  <InputText Class="form-control" @bind-Value="Contact.Email" />
   <ValidationMessage For="ContactModel.Email" />
 
   <button class="btn btn-primary mt-3" type="submit">Submit</button>
@@ -90,7 +90,7 @@ Blazor builds on top of the `ComponentBase` class to provide us with a handy set
 
 At runtime, it is the `EditContext` that is responsible for handling events that fire in reponse to interactions and notifying all other elements in the form's component hierarchy. Each component then updates their state before the form is then re-rendered.
 
-![](./images/editform-onchange.png)
+![](./images/editform-onchange.jpg)
 
 ## <a name="extending-components"></a> Extending Form Components
 
@@ -116,7 +116,7 @@ The following example shows a component to consolidate the repetitive markup tha
 </div>
 ```
 
-In this example we are simply extending from `InputText` which is the logical equivalent of a HTML input text element. This seems like a good fit as we are logically representing a single text input and extending from `InputText` saves us from having to write any additional code. You can extend from other classes in the inheritance hierarchy depending on your own specific customization needs.
+In this example we are simply extending from `InputText` which is the logical equivalent of a HTML input text element. This seems like a good fit as we are representing a single text input and extending from `InputText` saves us from having to write any additional code. You can extend from other classes in the inheritance hierarchy depending on your own specific customization needs.
 
 Our custom `BootstrapInput` control is shown here in a form with a binding to the `ContactDetails.Name` property of the model.
 
@@ -158,7 +158,7 @@ Each of the validation components has access to the `EditContext` and they use t
 
 Form fields access the [ValidationMessageStore](https://github.com/dotnet/aspnetcore/blob/edc1ca88e17e6cb60a5ea0966d751075d35111b9/src/Components/Forms/src/ValidationMessageStore.cs) to check for errors when determining how to render their own state. The following image shows the Email field highlighted in red, indicating to the user that it is in an invalid state.
 
-![](./images/form-validation-2.png)
+![](./images/form-validation.jpg)
 
 In addition to the field state warnings, you can add `ValidationMessage` and `<ValidationSummary>` components to display validation error messages to the user at relevant positions on the form. As you may have already guessed, these components also use the message store to gain access to validation messages.
 

@@ -9,9 +9,9 @@ The article is divided into the following sections:
 1. [Form Fundamentals](#fundamentals)
 2. [Introducing Blazor Forms](#blazor-forms)
 3. [Blazor Component Model](#component-model)
-4. [Extending Form Components](#extending-components)
+4. [Extending Input Components](#extending-components)
 5. [Validation](#validation)
-6. [Extending Validation](#extending-validation)
+6. [Extending Validation Components](#extending-validation)
 
 ## <a name="fundamentals"></a> Form Fundamentals
 
@@ -92,7 +92,7 @@ At runtime, it is the `EditContext` that is responsible for handling events that
 
 ![](./images/editform-onchange.jpg)
 
-## <a name="extending-components"></a> Extending Form Components
+## <a name="extending-components"></a> Extending Input Components
 
 There may be times where you need to create your own custom components. For example, it is common to use custom components to encapsulate and simplify repetitive chunks of code.
 
@@ -162,9 +162,27 @@ Form fields access the [ValidationMessageStore](https://github.com/dotnet/aspnet
 
 In addition to the field state warnings, you can add `ValidationMessage` and `<ValidationSummary>` components to display validation error messages to the user at relevant positions on the form. As you may have already guessed, these components also use the message store to gain access to validation messages.
 
-## <a name="extending-validation"></a> Extending Validation
+## <a name="extending-validation"></a> Extending Validation Components
 
-In certain situations we might want to customize the error styles to conform to our design system. This might be Bootstrap, Material UI, or our own custom design system. The following code segment shows how easy it is to extend the styling of the form by plugging in a custom style provider. Full implementation of the `BootstrapStyleProvider` can be found [here](https://github.com/dneimke/Blazor.Samples/blob/main/Core/BootstrapStyleProvider.cs).
+In certain situations, you might want to customize the error styles to conform to our design system. For example, suppose you are building your applications with Bootstrap and you might want to any additional classes during validation to show an icon to give a better visual indication to the user.
+
+![](./images/form-validation-2.jpg)
+
+This could be done by extending the `FieldCssClassProvider` and overriding the `GetFieldCssClass` method, which gets triggered when form validation is performed. The following [code segment](https://github.com/dneimke/Blazor.Samples/blob/main/Core/BootstrapStyleProvider.cs) shows how easy it is to extend the styling of the form by plugging in a custom style provider.
+
+```csharp
+public class BootstrapStyleProvider : FieldCssClassProvider
+{
+    public override string GetFieldCssClass(EditContext editContext, in FieldIdentifier fieldIdentifier)
+    {
+        var isValid = !editContext.GetValidationMessages(fieldIdentifier).Any();
+
+        return isValid ? "is-valid was-validated" : "is-invalid was-validated";
+    }
+}
+```
+
+This custom CSS class provider class can then be registered against the `EditContext` of the form as shown below.
 
 ```csharp
 protected override void OnInitialized()
@@ -175,7 +193,11 @@ protected override void OnInitialized()
 }
 ```
 
-Rules - if we want additional validation logic other than DataAnnotations, we can write our own custom validator and handle validation events from the `EditContext` to use our own logic to write errors to the message store.
+You don't have to have to be limited to Bootstrap; it could be even Material UI, or our own custom design system. 
+
+Another extensibility point Blazor Forms provide us is the ability to plug-in custom validators. Suppose we want additional validation logic other than DataAnnotations, we can write our own custom validator and handle validation events from the `EditContext` to use our own logic to write errors to the message store.
+
+This can be achieved by creating a new custom validator class that extends from `ComponentBase`. This will act like a regular Blazor component, but we pass down the form's current EditContext as a cascading parameter. In the `OnInitialized` method, we can then wire up the custom validation methods into the `OnValidationRequested` and `OnFieldChanged` events of the `EditContext` of the form.
 
 ```csharp
 public class CustomValidator : ComponentBase
@@ -192,11 +214,20 @@ public class CustomValidator : ComponentBase
     (sender, eventArgs) => ValidateField(editContext, messages, eventArgs.FieldIdentifier);
     }
 
-    // TO DO: provide your own logic for doing model and field validation
+    // TO DO: provide your logic for doing model and field validation
 }
 ```
 
-Blazor already has got great third-party extensions for [extending validation rules](https://chrissainty.com/using-fluentvalidation-for-forms-validation-in-razor-components/) such as with FluentValidation demonstrated by the [Blazored.FluentValidation](https://github.com/Blazored/FluentValidation) library.
+We could then use this validator component from the markup as shown below.
+
+```html
+<EditForm Model="@ContactDetails" OnValidSubmit="@FormSubmitted">
+  <CustomValidator />
+  ...
+</EditForm>
+```
+
+This kind of extensibility has given rise to great third-party validators such as [Blazored.FluentValidation](https://github.com/Blazored/FluentValidation) which leverages [FluentValidation](https://fluentvalidation.net/). Chris Sainty has written a [great article](https://chrissainty.com/using-fluentvalidation-for-forms-validation-in-razor-components/) on this topic if you are interested in exploring more.
 
 ## Wrapping it up
 

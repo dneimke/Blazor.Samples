@@ -19,19 +19,19 @@ Let's assume that we are building a Contact form which has two fields (Name and 
 
 ```html
 <form asp-controller="Home" asp-action="Register" method="post">
-  <label asp-for="Contact.Name" class="form-label">Name</label>
-  <input asp-for="Contact.Name" class="form-control" type="text" />
-  <span asp-validation-for="Contact.Name" class="text-danger"></span>
+  <label asp-for="ContactDetails.Name" class="form-label">Name</label>
+  <input asp-for="ContactDetails.Name" class="form-control" type="text" />
+  <span asp-validation-for="ContactDetails.Name" class="text-danger"></span>
 
-  <label asp-for="Contact.Email" class="form-label">Email address</label>
-  <input asp-for="Contact.Email" class="form-control" />
-  <span asp-validation-for="Contact.Email" class="text-danger"></span>
+  <label asp-for="ContactDetails.Email" class="form-label">Email address</label>
+  <input asp-for="ContactDetails.Email" class="form-control" />
+  <span asp-validation-for="ContactDetails.Email" class="text-danger"></span>
 
   <button class="btn btn-primary mt-3" type="submit">Submit</button>
 </form>
 ```
 
-The form defines an HTTP method and an endpoint to which the data is sent. It uses ASP.NET tag helpers to render the correct types of input controls and validation messages based on data annotations on the underlying `Contact` model.
+The form defines an HTTP method and an endpoint to which the data is sent. It uses ASP.NET tag helpers to render the correct types of input controls and validation messages based on data annotations on the underlying `ContactDetails` model.
 
 One problem with this solution is that when the form submits, a full page refresh is required as the server now needs to send a full HTTP payload to the client. To avoid this, one could use the approach offered by SPA solutions which abstract and simplify common tasks such as managing the state of fragments of pages away from the developer.
 
@@ -49,16 +49,16 @@ With Blazor, developers write end-to-end solutions using .NET. This removes the 
 Converting the previous form to Blazor results in the following code and markup.
 
 ```html
-<EditForm Model="@Contact" OnSubmit="@FormSubmitted">
+<EditForm Model="@ContactDetails" OnSubmit="@FormSubmitted">
   <DataAnnotationsValidator />
 
-  <label for="@nameof(Contact.Name)" class="form-label">Name</label>
-  <InputText Class="form-control" @bind-Value="Contact.Name" />
-  <ValidationMessage For="Contact.Name" />
+  <label for="@nameof(ContactDetails.Name)" class="form-label">Name</label>
+  <InputText Class="form-control" @bind-Value="ContactDetails.Name" />
+  <ValidationMessage For="ContactDetails.Name" />
 
-  <label for="@nameof(Contact.Email)" class="form-label">Email</label>
-  <InputText Class="form-control" @bind-Value="Contact.Email" />
-  <ValidationMessage For="ContactModel.Email" />
+  <label for="@nameof(ContactDetails.Email)" class="form-label">Email</label>
+  <InputText Class="form-control" @bind-Value="ContactDetails.Email" />
+  <ValidationMessage For="ContactDetails.Email" />
 
   <button class="btn btn-primary mt-3" type="submit">Submit</button>
 </EditForm>
@@ -139,7 +139,7 @@ Before building your own custom components, it's worth checking out the comprehe
 In the Blazor form definition shown earlier, we saw that **DataAnnotationsValidator** and **ValidationMessage** elements had been added to the form to provide validation support based on [Data Annotations](https://docs.microsoft.com/en-us/dotnet/api/system.componentmodel.dataannotations?view=net-5.0).
 
 ```html
-<EditForm Model="@ContactModel" OnValidSubmit="@FormSubmitted">
+<EditForm Model="@ContactDetails" OnValidSubmit="@FormSubmitted">
   <DataAnnotationsValidator />
   ...
 </EditForm>
@@ -164,7 +164,7 @@ In addition to the field state warnings, you can add `ValidationMessage` and `<V
 
 ## <a name="extending-validation"></a> Extending Validation
 
-Styles... describe that we might want to customize the error styles to conform to our design system. This might be Bootstrap, Material UI, or our own custom design system.
+In certain situations we might want to customize the error styles to conform to our design system. This might be Bootstrap, Material UI, or our own custom design system. The following code segment shows how easy it is to extend the styling of the form by plugging in a custom style provider. Full implementation of the `BootstrapStyleProvider` can be found [here](https://github.com/dneimke/Blazor.Samples/blob/main/Core/BootstrapStyleProvider.cs).
 
 ```csharp
 protected override void OnInitialized()
@@ -176,9 +176,6 @@ protected override void OnInitialized()
 ```
 
 Rules - if we want additional validation logic other than DataAnnotations, we can write our own custom validator and handle validation events from the `EditContext` to use our own logic to write errors to the message store.
-
-https://github.com/Blazored/FluentValidation
-https://chrissainty.com/using-fluentvalidation-for-forms-validation-in-razor-components/
 
 ```csharp
 public class CustomValidator : ComponentBase
@@ -198,6 +195,8 @@ public class CustomValidator : ComponentBase
     // TO DO: provide your own logic for doing model and field validation
 }
 ```
+
+Blazor already has got great third-party extensions for [extending validation rules](https://chrissainty.com/using-fluentvalidation-for-forms-validation-in-razor-components/) such as with FluentValidation demonstrated by the [Blazored.FluentValidation](https://github.com/Blazored/FluentValidation) library.
 
 ## Wrapping it up
 

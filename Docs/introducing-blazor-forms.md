@@ -2,7 +2,9 @@
 
 Forms are a key of any web application as they provide a way to collect information from end-users. This information might range from the user details that we collect as part of a sign-up process down to a single textbox that allows users to leave comments or post messages in an collaborative application.
 
-## Table of contents
+In this article we'll explain the benefits of Blazor forms, we'll look at their lifecycle and explain the fundamental concepts used to create and extend forms using Blazor.
+
+The article is divided into the following sections:
 
 1. [Form Fundamentals](#fundamentals)
 2. [Introducing Blazor Forms](#blazor-forms)
@@ -11,11 +13,9 @@ Forms are a key of any web application as they provide a way to collect informat
 5. [Validation](#validation)
 6. [Extending Validation](#extending-validation)
 
-In this article we'll explain the benefits of Blazor forms, we'll look at their lifecycle and explain the fundamental concepts used to create and extend forms using Blazor.
-
 ## <a name="fundamentals"></a> Form Fundamentals
 
-Let's assume that we are building a Contact form which has two fields (Name and Email) and a button to submit the form. In ASP.NET MVC the code required to build such a form might look like this.
+Let's assume that we are building a Contact form which has two fields (Name and Email) and a button to submit the form. In ASP.NET MVC, the code required to build such a form might look like this.
 
 ```html
 <form asp-controller="Home" asp-action="Register" method="post">
@@ -31,15 +31,11 @@ Let's assume that we are building a Contact form which has two fields (Name and 
 </form>
 ```
 
-The form defines an HTTP method and an endpoint to which the data is sent and it uses ASP.NET tag helpers to render the correct types of input controls and validation messages based on data annotations on the underlying `Contact` model.
+The form defines an HTTP method and an endpoint to which the data is sent. It uses ASP.NET tag helpers to render the correct types of input controls and validation messages based on data annotations on the underlying `Contact` model.
 
-One problem with this solution is that when the form submits, a full page refresh is required. This requires a full HTTP payload to be sent back to the client. In addition to this excessive payload, the full page refresh interrupts the users' experience. For example, the newly loaded page may result in the scroll position changing thus requiring the user to scroll to where they left off!
+One problem with this solution is that when the form submits, a full page refresh is required as the server now needs to send a full HTTP payload to the client. To avoid this, one could use the approach offered by SPA solutions which abstract and simplify common tasks such as managing the state of fragments of pages away from the developer.
 
-To avoid these issues, we could write client-side code to post the form, handle the response, and update only a specific fragment of the page. This is the approach offered by SPA solutions which abstract and simplify common tasks such as managing the state of fragments of pages away from the developer.
-
-As we move away from a server-side only approach, we need to bring in third-party libraries and write code to make the HTTP requests, display validation errors correctly and parse data from JSON response messages.
-
-The separation of client and server-side code introduces further complexity such as needing to deal with data type differences and other mismatches between server and client components.
+However, the separation of client and server-side code introduces further complexity, such as needing to deal with data type differences and other mismatches between server and client components.
 
 With Blazor, developers write end-to-end solutions using .NET. This removes the technology mismatches and provides the following benefits:
 
@@ -107,7 +103,7 @@ The following example shows a component to consolidate the repetitive markup tha
 
 <div class="form-group">
   @if (!string.IsNullOrWhiteSpace(Label)) {
-  <label class="form-control-label" for="@Id">@Label</label>
+    <label class="form-control-label" for="@Id">@Label</label>
   }
 
   <InputText
@@ -203,7 +199,7 @@ public class CustomValidator : ComponentBase
 }
 ```
 
-## Conclusion
+## Wrapping it up
 
 In this article we have given an overview of the fundamental concepts of Blazor forms.
 

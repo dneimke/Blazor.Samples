@@ -2,9 +2,14 @@
 
 Forms are a key of any web application as they provide a way to collect information from end-users. This information might range from the user details that we collect as part of a sign-up process down to a single textbox that allows users to leave comments or post messages in an collaborative application.
 
-Table of contents
+## Table of contents
 
-* [Form Fundamentals](#fundamentals)
+1. [Form Fundamentals](#fundamentals)
+2. [Introducing Blazor Forms](#blazor-forms)
+3. [Blazor Component Model](#component-model)
+4. [Extending Form Components](#extending-components)
+5. [Validation](#validation)
+6. [Extending Validation](#extending-validation)
 
 In this article we'll explain the benefits of Blazor forms, we'll look at their lifecycle and explain the fundamental concepts used to create and extend forms using Blazor.
 
@@ -43,7 +48,7 @@ With Blazor, developers write end-to-end solutions using .NET. This removes the 
 - No need to deal with intermediary formats such as JSON to pass data between the front and back-end
 - Reusing validation code on the server and client
 
-## Introducing Blazor Forms
+## <a name="blazor-forms"></a> Introducing Blazor Forms
 
 Converting the previous form to Blazor results in the following code and markup.
 
@@ -77,7 +82,7 @@ Although the structure of the mark-up looks very similar for both the Blazor and
 
 In the Blazor example, there is no separate Controller/Action and all code is written using C# and .NET.
 
-## Blazor Component Model
+## <a name="component-model"></a> Blazor Component Model
 
 Now that we've seen how to structure a Blazor form, it's worth diving a little deeper to demystify the `EditForm` and its related child elements.
 
@@ -91,7 +96,7 @@ At runtime, it is the `EditContext` that is responsible for handling events that
 
 ![](./images/editform-onchange.png)
 
-## Extending Form Components
+## <a name="extending-components"></a> Extending Form Components
 
 There may be times where you need to create your own custom components. For example, it is common to use custom components to encapsulate and simplify repetitive chunks of code.
 
@@ -133,7 +138,7 @@ Before building your own custom components, it's worth checking out the comprehe
 - [Telerik](https://www.telerik.com/blazor-ui)'s Blazor component is a comprehensive library of components that can be used to create very customized solutions
 - [MudBlazor](https://mudblazor.com/) component library inspired by Google's Material design language and written entirely in C#
 
-## Validation
+## <a name="validation"></a> Validation
 
 In the Blazor form definition shown earlier, we saw that **DataAnnotationsValidator** and **ValidationMessage** elements had been added to the form to provide validation support based on [Data Annotations](https://docs.microsoft.com/en-us/dotnet/api/system.componentmodel.dataannotations?view=net-5.0).
 
@@ -161,7 +166,7 @@ Form fields access the [ValidationMessageStore](https://github.com/dotnet/aspnet
 
 In addition to the field state warnings, you can add `ValidationMessage` and `<ValidationSummary>` components to display validation error messages to the user at relevant positions on the form. As you may have already guessed, these components also use the message store to gain access to validation messages.
 
-## Extending Validation
+## <a name="extending-validation"></a> Extending Validation
 
 Styles... describe that we might want to customize the error styles to conform to our design system. This might be Bootstrap, Material UI, or our own custom design system.
 

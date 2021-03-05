@@ -46,7 +46,9 @@ With Blazor, developers write end-to-end solutions using .NET. This removes the 
 
 ## <a name="blazor-forms"></a> Introducing Blazor Forms
 
-Converting the previous form to Blazor results in the following code and markup.
+Blazor comes with an `EditForm` component that offers a comprehensive system for building rich forms with flexible validation efficiently. The `EditForm` can be easily extended to meet unique requirements without the need for third-party dependencies.
+
+Converting the previous form to a Blazor `EditForm` results in the following code and markup.
 
 ```html
 <EditForm Model="@ContactDetails" OnSubmit="@FormSubmitted">
@@ -68,7 +70,7 @@ Although the structure of the mark-up looks very similar for both the Blazor and
 
 - **EditForm** defines a Blazor component which renders a `<form>` element under-the-hood.
 
-- The **Model** attribute lets us bind an object to our form which gets updated whenever we make changes to the form.
+- The **Model** attribute lets us bind an object to our form which gets updated whenever changes are made.
 
 - **OnSubmit** configures a local method which gets triggered when the form is submitted. _Note: Blazor also provides us `OnValidSubmit` and `OnInvalidSubmit` convenience methods_.
 
@@ -76,19 +78,21 @@ Although the structure of the mark-up looks very similar for both the Blazor and
 
 - **DataAnnotationsValidator** and **ValidationMessage** elements attach our form to validation support and display any associated validation warnings to the user.
 
-In the Blazor example, there is no separate Controller/Action and all code is written using C# and .NET.
+In the Blazor example, there is no separate Controllers or Actions required and all code is written using C# and .NET.
 
 ## <a name="component-model"></a> Blazor Component Model
 
 Now that we've seen how to structure a Blazor form, it's worth diving a little deeper to demystify the `EditForm` and its related child elements.
 
-All Blazor form elements we've seen, including the [EditForm](https://github.com/dotnet/aspnetcore/blob/main/src/Components/Web/src/Forms/EditForm.cs), inherit from the abstract [ComponentBase](https://docs.microsoft.com/en-us/dotnet/api/microsoft.aspnetcore.components.componentbase?view=aspnetcore-5.0) class. This `EditForm` is the root source for [cascading](https://docs.microsoft.com/en-us/aspnet/core/blazor/components/cascading-values-and-parameters?view=aspnetcore-5.0) the EditContext and is the coordinator of the form's lifecycle and events.
-
-Blazor builds on top of the `ComponentBase` class to provide us with a handy set of built-in components that align to each of the standard HTML input types. The base class for each of these is the `InputBase` class as shown in the following class hierarchy diagram.
+All Blazor form elements we've seen, including the [EditForm](https://github.com/dotnet/aspnetcore/blob/main/src/Components/Web/src/Forms/EditForm.cs), inherit from the abstract [ComponentBase](https://docs.microsoft.com/en-us/dotnet/api/microsoft.aspnetcore.components.componentbase?view=aspnetcore-5.0) class. Blazor builds on top of the `ComponentBase` class to provide us with a handy set of built-in components that align to each of the standard HTML input types. The base class for each of these is the `InputBase` class as shown in the following class hierarchy diagram.
 
 ![](./images/inheritance-hierarchy.jpg)
 
-At runtime, it is the `EditContext` that is responsible for handling events that fire in reponse to interactions and notifying all other elements in the form's component hierarchy. Each component then updates their state before the form is then re-rendered.
+A component that plays a key role in Blazor's forms is the `EditContext`. It maintains the state and coordinates the form's lifecycle and events.
+
+When a form is instantiated, the `Model` is set as the default state and the `EditContext` is [cascaded](https://docs.microsoft.com/en-us/aspnet/core/blazor/components/cascading-values-and-parameters?view=aspnetcore-5.0) to child elements in the form hierarchy.
+
+At runtime, the `EditContext` handles change events and notifies the other components to update their own state before the form is then re-rendered.
 
 ![](./images/editform-onchange.jpg)
 
@@ -103,7 +107,7 @@ The following example shows a component to consolidate the repetitive markup tha
 
 <div class="form-group">
   @if (!string.IsNullOrWhiteSpace(Label)) {
-    <label class="form-control-label" for="@Id">@Label</label>
+  <label class="form-control-label" for="@Id">@Label</label>
   }
 
   <InputText
@@ -193,7 +197,7 @@ protected override void OnInitialized()
 }
 ```
 
-You don't have to have to be limited to Bootstrap; it could be even Material UI, or our own custom design system. 
+You don't have to have to be limited to Bootstrap; it could be even Material UI, or our own custom design system.
 
 Another extensibility point Blazor Forms provide us is the ability to plug-in custom validators. Suppose we want additional validation logic other than DataAnnotations, we can write our own custom validator and handle validation events from the `EditContext` to use our own logic to write errors to the message store.
 

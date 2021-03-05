@@ -100,7 +100,9 @@ At runtime, the `EditContext` handles change events and notifies the other compo
 
 There may be times where you need to create your own custom components. For example, it is common to use custom components to encapsulate and simplify repetitive chunks of code.
 
-The following example shows a component to consolidate the repetitive markup that is required to render Bootstrap form element groups. This is done to make it easier to maintain the code and helps enforce consistency across an application.
+In Blazor this is as simple as creating a Razor component with whatever markup and logic is required.
+
+The following component consolidates the markup to render Bootstrap form element groups. This removes repetitve code and makes it easier to maintain and enforce consistency across an application.
 
 ```html
 @inherits InputText
@@ -120,9 +122,9 @@ The following example shows a component to consolidate the repetitive markup tha
 </div>
 ```
 
-In this example we are simply extending from `InputText` which is the logical equivalent of a HTML input text element. This seems like a good fit as we are representing a single text input and extending from `InputText` saves us from having to write any additional code. You can extend from other classes in the inheritance hierarchy depending on your own specific customization needs.
+In the example we inherit from `InputText` which is a good fit for this use case and reduces the to write any custom code. You can extend from other classes in the component inheritance hierarchy depending on your own specific customization needs.
 
-Our custom `BootstrapInput` control is shown here in a form with a binding to the `ContactDetails.Name` property of the model.
+Our custom `BootstrapInput` component is shown here being used in a form with a binding to `ContactDetails.Name`.
 
 ```html
 <EditForm Model="@ContactDetails" OnSubmit="@FormSubmitted">
@@ -158,21 +160,21 @@ The following summary describes each of the built-in validation components that 
 | [`<DataAnnotationsValidator>`](https://docs.microsoft.com/en-us/dotnet/api/microsoft.aspnetcore.components.forms.dataannotationsvalidator?view=aspnetcore-5.0)                       | Applies validation rules based on Data Annotations at runtime                                                                                                                                                    |
 | [`<ObjectGraphDataAnnotationsValidator>`](https://docs.microsoft.com/en-us/aspnet/core/blazor/forms-validation?view=aspnetcore-5.0#nested-models-collection-types-and-complex-types) | Applies validation rules similar to DataAnnotationsValidator except that it traverses nested properties within an object hierarchy of the given model. Note that this need to be added as a separate dependency. |
 
-Each of the validation components has access to the `EditContext` and they use this to access and validate the `Model`. The validators maintain a store of error messages for each field associated with the form. You can see the code for how this is done [here](https://github.com/dotnet/aspnetcore/blob/edc1ca88e17e6cb60a5ea0966d751075d35111b9/src/Components/Forms/src/EditContextDataAnnotationsExtensions.cs#L36).
+Validation components have access to the `EditContext` and use this to access and validate the `Model`. The validators write to a store of error messages for each field associated with the form. You can see the code for how this is done [here](https://github.com/dotnet/aspnetcore/blob/edc1ca88e17e6cb60a5ea0966d751075d35111b9/src/Components/Forms/src/EditContextDataAnnotationsExtensions.cs#L36).
 
-Form fields access the [ValidationMessageStore](https://github.com/dotnet/aspnetcore/blob/edc1ca88e17e6cb60a5ea0966d751075d35111b9/src/Components/Forms/src/ValidationMessageStore.cs) to check for errors when determining how to render their own state. The following image shows the Email field highlighted in red, indicating to the user that it is in an invalid state.
+Form fields then access the [ValidationMessageStore](https://github.com/dotnet/aspnetcore/blob/edc1ca88e17e6cb60a5ea0966d751075d35111b9/src/Components/Forms/src/ValidationMessageStore.cs) when determining how to render their own state. The following image shows the Email field highlighted in red, indicating to the user that it is in an invalid state.
 
 ![](./images/form-validation.jpg)
 
-In addition to the field state warnings, you can add `ValidationMessage` and `<ValidationSummary>` components to display validation error messages to the user at relevant positions on the form. As you may have already guessed, these components also use the message store to gain access to validation messages.
+In addition to the styled warnings, you can add `ValidationMessage` and `ValidationSummary` components to display detailed validation error messages to the user at relevant positions on the form. As you may have already guessed, both of these components also access the `ValidationMessageStore` to access error messages.
 
 ## <a name="extending-validation"></a> Extending Validation Components
 
-In certain situations, you might want to customize the error styles to conform to our design system. For example, suppose you are building your applications with Bootstrap and you might want to any additional classes during validation to show an icon to give a better visual indication to the user.
+In certain situations, you might want to customize the error styles to conform to your design system. For example, suppose you're building your applications with Bootstrap. You might want to apply Bootstrap styles during validation to improve the user experience.
 
 ![](./images/form-validation-2.jpg)
 
-This could be done by extending the `FieldCssClassProvider` and overriding the `GetFieldCssClass` method, which gets triggered when form validation is performed. The following [code segment](https://github.com/dneimke/Blazor.Samples/blob/main/Core/BootstrapStyleProvider.cs) shows how easy it is to extend the styling of the form by plugging in a custom style provider.
+This is done by extending the `FieldCssClassProvider` class and overriding the `GetFieldCssClass` method to apply specific styles based on the state of the field. The following piece of code shows how easily this is done.
 
 ```csharp
 public class BootstrapStyleProvider : FieldCssClassProvider
@@ -186,7 +188,7 @@ public class BootstrapStyleProvider : FieldCssClassProvider
 }
 ```
 
-This custom CSS class provider class can then be registered against the `EditContext` of the form as shown below.
+This provider can then be registered with the `EditContext` as shown below.
 
 ```csharp
 protected override void OnInitialized()
@@ -197,11 +199,11 @@ protected override void OnInitialized()
 }
 ```
 
-You don't have to have to be limited to Bootstrap; it could be even Material UI, or our own custom design system.
+You're not limited to returning styles for only Bootstrap; the classes you return could be for Material UI, or even your own custom design system.
 
-Another extensibility point Blazor Forms provide us is the ability to plug-in custom validators. Suppose we want additional validation logic other than DataAnnotations, we can write our own custom validator and handle validation events from the `EditContext` to use our own logic to write errors to the message store.
+Suppose we want to use custom validation logic than goes beyond what DataAnnotations can provide. In addition to providing our custom field styles, Blazor also allows us to provide our own custom validators.
 
-This can be achieved by creating a new custom validator class that extends from `ComponentBase`. This will act like a regular Blazor component, but we pass down the form's current EditContext as a cascading parameter. In the `OnInitialized` method, we can then wire up the custom validation methods into the `OnValidationRequested` and `OnFieldChanged` events of the `EditContext` of the form.
+To achieve this we can create a class that extends from the `ComponentBase` class so that we can access to the form's cascaded EditContext parameter. We can then tap into the `OnValidationRequested` and `OnFieldChanged` events to call into our own logic.
 
 ```csharp
 public class CustomValidator : ComponentBase
@@ -222,7 +224,7 @@ public class CustomValidator : ComponentBase
 }
 ```
 
-We could then use this validator component from the markup as shown below.
+We can then use our own validator component from the markup as shown below.
 
 ```html
 <EditForm Model="@ContactDetails" OnValidSubmit="@FormSubmitted">
@@ -231,7 +233,9 @@ We could then use this validator component from the markup as shown below.
 </EditForm>
 ```
 
-This kind of extensibility has given rise to great third-party validators such as [Blazored.FluentValidation](https://github.com/Blazored/FluentValidation) which leverages [FluentValidation](https://fluentvalidation.net/). Chris Sainty has written a [great article](https://chrissainty.com/using-fluentvalidation-for-forms-validation-in-razor-components/) on this topic if you are interested in exploring more.
+This kind of extensibility has given rise to great third-party validators such as [Blazored.FluentValidation](https://github.com/Blazored/FluentValidation) which leverages [FluentValidation](https://fluentvalidation.net/).
+
+If you are interested in learning about this approach, Chris Sainty has written [an in-depth article](https://chrissainty.com/using-fluentvalidation-for-forms-validation-in-razor-components/) explaining how to approach it.
 
 ## Wrapping it up
 

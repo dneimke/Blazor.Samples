@@ -1,6 +1,6 @@
 # Introducing Blazor Forms
 
-Forms are a key of any web application as they provide a way to collect information from end-users. This information might range from the user details that we collect as part of a sign-up process down to a single textbox that allows users to leave comments or post messages in an collaborative application.
+Forms are a key part of any web application as they provide a way to collect information from end-users. This information might range from the user details that we collect as part of a sign-up process down to a single textbox that allows users to leave comments or post messages in an collaborative application.
 
 In this article we'll explain the benefits of Blazor forms, we'll look at their lifecycle and explain the fundamental concepts used to create and extend forms using Blazor.
 
@@ -33,7 +33,7 @@ Let's assume that we are building a Contact form which has two fields (Name and 
 
 The form defines an HTTP method and an endpoint to which the data is sent. It uses ASP.NET tag helpers to render the correct types of input controls and validation messages based on data annotations on the underlying `ContactDetails` model.
 
-One problem with this solution is that when the form submits, a full page refresh is required as the server now needs to send a full HTTP payload to the client. To avoid this, one could use the approach offered by SPA solutions which abstract and simplify common tasks such as managing the state of fragments of pages away from the developer.
+One problem with this solution is that when the form submits, a full page refresh is required as the server now needs to send a full HTTP payload to the client. To avoid this, one could use the approach offered by Single Page Application (SPA) solutions which abstract and simplify common tasks such as managing the state of fragments of pages away from the developer.
 
 However, the separation of client and server-side code introduces further complexity, such as needing to deal with data type differences and other mismatches between server and client components.
 
@@ -120,7 +120,7 @@ The following component consolidates the markup to render Bootstrap form element
 </div>
 ```
 
-In the example we inherit from `InputText` which is a good fit for this use case as it reduces the need to write custom code. You can extend from other classes in the component inheritance hierarchy depending on your specific customization needs.
+In the example we inherit from `InputText` which is a good fit for this use case as it reduces the need to write custom code. You can extend from other classes in the component inheritance hierarchy depending on your specific customisation needs.
 
 Our custom `BootstrapInput` component is shown here being used in a form with a binding to `ContactDetails.Name`.
 
@@ -132,10 +132,10 @@ Our custom `BootstrapInput` component is shown here being used in a form with a 
 </EditForm>
 ```
 
-Before building your own custom components, it's worth checking out the comprehensive range of third-party components that are available via NuGet. These include specialized libraries of components such as:
+Before building your own custom components, it's worth checking out the comprehensive range of third-party components that are available via NuGet. These include specialised libraries of components such as:
 
 - [Blazored](https://github.com/Blazored) component library which includes controls that allow users to enter and view Markdown in forms
-- [Telerik](https://www.telerik.com/blazor-ui)'s Blazor component is a comprehensive library of components that can be used to create very customized solutions
+- [Telerik](https://www.telerik.com/blazor-ui)'s Blazor component is a comprehensive library of components that can be used to create very customised solutions
 - [MudBlazor](https://mudblazor.com/) component library inspired by Google's Material design language and written entirely in C#
 
 ## <a name="validation"></a> Validation
@@ -158,7 +158,7 @@ The following summary describes each of the built-in validation components that 
 | [`<DataAnnotationsValidator>`](https://docs.microsoft.com/en-us/dotnet/api/microsoft.aspnetcore.components.forms.dataannotationsvalidator?view=aspnetcore-5.0)                       | Applies validation rules based on Data Annotations at runtime                                                                                                                                                    |
 | [`<ObjectGraphDataAnnotationsValidator>`](https://docs.microsoft.com/en-us/aspnet/core/blazor/forms-validation?view=aspnetcore-5.0#nested-models-collection-types-and-complex-types) | Applies validation rules similar to DataAnnotationsValidator except that it traverses nested properties within an object hierarchy of the given model. Note that this need to be added as a separate dependency. |
 
-Validation components access the `EditContext` to validate the `Model` and write any error messages to a [ValidationMessageStore](https://github.com/dotnet/aspnetcore/blob/edc1ca88e17e6cb60a5ea0966d751075d35111b9/src/Components/Forms/src/ValidationMessageStore.cs) for each related field. You can see the code for how this is done [here](https://github.com/dotnet/aspnetcore/blob/edc1ca88e17e6cb60a5ea0966d751075d35111b9/src/Components/Forms/src/EditContextDataAnnotationsExtensions.cs#L36).
+Validation components access the `EditContext` to validate the `Model` and write any error messages to a [ValidationMessageStore](https://github.com/dotnet/aspnetcore/blob/edc1ca88e17e6cb60a5ea0966d751075d35111b9/src/Components/Forms/src/ValidationMessageStore.cs) for each related field. You can see the code for how this is done in Blazor's source code [on Github](https://github.com/dotnet/aspnetcore/blob/edc1ca88e17e6cb60a5ea0966d751075d35111b9/src/Components/Forms/src/EditContextDataAnnotationsExtensions.cs#L36).
 
 Form fields then also access the same `ValidationMessageStore` looking for any associated errors when determining how to render their own state. The following image shows the Email field highlighted in red, indicating to the user that it is in an invalid state.
 
@@ -168,7 +168,7 @@ In addition to the styled warnings, you can add `ValidationMessage` and `Validat
 
 ## <a name="extending-validation"></a> Extending Validation Components
 
-In certain situations, you might want to customize the error styles to conform to your design system. For example, suppose you're building your applications with Bootstrap. You might want to apply Bootstrap validation styles to improve the user experience.
+In certain situations, you might want to customise the error styles to conform to your design system. For example, suppose you're building your applications with Bootstrap. You might want to apply Bootstrap validation styles to improve the user experience.
 
 ![](./images/form-validation-2.jpg)
 
@@ -239,4 +239,4 @@ If you are interested in learning about this, Chris Sainty has written [an in-de
 
 In this article we have given an overview of the fundamental concepts of Blazor forms.
 
-We compared ASP.NET MVC forms to Blazor forms. We then looked at the fundamental concepts required to understand how to use form inputs and validation and saw how to extend and customize them to our own needs.
+We compared ASP.NET MVC forms to Blazor forms. We then looked at the fundamental concepts required to understand how to use form inputs and validation and saw how to extend and customise them to our own needs.

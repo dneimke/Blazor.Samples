@@ -1,0 +1,9 @@
+﻿@using System.Linq.Expressions
+@inherits InputText
+
+<div class="form-group">
+    <div class="input-group-text"><i class="fas fa-search"></i></div>
+    <InputText Class="form-control" placeholder="Search"  Value="@Value" 
+        ValueChanged="@ValueChanged" 
+        ValueExpression="@ValueExpression"></InputText>
+</div>
